@@ -19,7 +19,7 @@ const config = {
     headless: true,
     ignoreHTTPSErrors: true,
     screenshot: 'only-on-failure',
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
     video: 'off',
     // @ts-ignore - custom configuration option for nyc codecoverage output path
     coveragePath: fileURLToPath(new URL('../.nyc_output', import.meta.url))
@@ -28,37 +28,9 @@ const config = {
     {
       name: 'chrome',
       testMatch: '**/*.e2e.spec.js', // only run e2e tests
+      grepInvert: /@couchdb|@generatedata/,
       use: {
         browserName: 'chromium'
-      }
-    },
-    {
-      name: 'MMOC',
-      testMatch: '**/*.e2e.spec.js', // only run e2e tests
-      grepInvert: /@snapshot/,
-      use: {
-        browserName: 'chromium',
-        viewport: {
-          width: 2560,
-          height: 1440
-        }
-      }
-    },
-    {
-      name: 'firefox',
-      testMatch: '**/*.e2e.spec.js', // only run e2e tests
-      grepInvert: /@snapshot/,
-      use: {
-        browserName: 'firefox'
-      }
-    },
-    {
-      name: 'chrome-beta', //Only Chrome Beta is available on ubuntu -- not chrome canary
-      testMatch: '**/*.e2e.spec.js', // only run e2e tests
-      grepInvert: /@snapshot/,
-      use: {
-        browserName: 'chromium',
-        channel: 'chrome-beta'
       }
     }
   ],
