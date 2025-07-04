@@ -37,7 +37,8 @@ report.*.json
 
 # e2e test artifacts
 test-results
-html-test-results
+blob-report
+playwright-report
 
 # couchdb scripting artifacts
 src/plugins/persistence/couch/.env.local
