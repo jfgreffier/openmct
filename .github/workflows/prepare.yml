@@ -26,6 +26,9 @@ jobs:
       - name: Run prepare script
         run: npm run prepare
 
+      - name: Create .nojekyll file
+        run: touch dist/.nojekyll
+
       - name: Upload dist folder as artifact
         uses: actions/upload-pages-artifact@v3
         with:
