@@ -12,7 +12,7 @@ export default merge(common, {
   mode: 'production',
   plugins: [
     new webpack.DefinePlugin({
-      __OPENMCT_ROOT_RELATIVE__: '""'
+      __OPENMCT_ROOT_RELATIVE__: '"openmct/"'
     })
   ],
   devtool: 'source-map'
