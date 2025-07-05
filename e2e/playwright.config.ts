@@ -11,7 +11,6 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      testMatch: '**/*.e2e.spec.js', // only run e2e tests
       grepInvert: /@couchdb|@generatedata/,
       use: { ...devices['Desktop Chrome'] }
     }
