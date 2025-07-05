@@ -11,7 +11,6 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      grepInvert: /@couchdb|@generatedata/,
       use: { ...devices['Desktop Chrome'] }
     }
   ]

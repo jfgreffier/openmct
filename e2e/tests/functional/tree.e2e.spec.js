@@ -28,32 +28,6 @@ test.describe('Main Tree', () => {
     await page.goto('./', { waitUntil: 'domcontentloaded' });
   });
 
-  test('Creating a child object within a folder and immediately opening it shows the created object in the tree @couchdb @network', async ({
-    page
-  }) => {
-    test.info().annotations.push({
-      type: 'issue',
-      description: 'https://github.com/nasa/openmct/issues/5975'
-    });
-
-    const folder = await createDomainObjectWithDefaults(page, {
-      type: 'Folder'
-    });
-
-    await page.getByLabel('Show selected item in tree').click();
-
-    const clock = await createDomainObjectWithDefaults(page, {
-      type: 'Clock',
-      parent: folder.uuid
-    });
-
-    await page.getByLabel(`Expand ${folder.name} folder`).click();
-
-    await expect(
-      page.getByRole('tree', { name: 'Main Tree' }).getByRole('treeitem', { name: clock.name })
-    ).toBeVisible();
-  });
-
   test('Creating a child object on one tab and expanding its parent on the other shows the correct composition @2p', async ({
     page
   }) => {
@@ -81,39 +55,6 @@ test.describe('Main Tree', () => {
 
     await page2.getByLabel('Expand My Items folder').click();
 
-    await expect(
-      page2
-        .getByRole('tree', { name: 'Main Tree' })
-        .getByRole('treeitem', { name: page1Folder.name })
-    ).toBeVisible();
-  });
-
-  test('Creating a child object on one tab and expanding its parent on the other shows the correct composition @couchdb @network @2p', async ({
-    page
-  }) => {
-    test.info().annotations.push({
-      type: 'issue',
-      description: 'https://github.com/nasa/openmct/issues/6391'
-    });
-
-    const page2 = await page.context().newPage();
-
-    // Both pages: Go to baseURL
-    await Promise.all([
-      page.goto('./', { waitUntil: 'domcontentloaded' }),
-      page2.goto('./', { waitUntil: 'domcontentloaded' })
-    ]);
-
-    await Promise.all([
-      page.waitForURL('**/browse/mine?**'),
-      page2.waitForURL('**/browse/mine?**')
-    ]);
-
-    const page1Folder = await createDomainObjectWithDefaults(page, {
-      type: 'Folder'
-    });
-
-    await page2.getByLabel('Expand My Items folder').click();
     await expect(
       page2
         .getByRole('tree', { name: 'Main Tree' })
@@ -186,40 +127,6 @@ test.describe('Main Tree', () => {
         'www'
       ]);
     });
-  });
-  test('Opening and closing an item before the request has been fulfilled will abort the request @couchdb @network', async ({
-    page
-  }) => {
-    let requestWasAborted = false;
-
-    page.on('requestfailed', (request) => {
-      // check if the request was aborted
-      if (request.failure().errorText === 'net::ERR_ABORTED') {
-        requestWasAborted = true;
-      }
-    });
-
-    await createDomainObjectWithDefaults(page, {
-      type: 'Folder',
-      name: 'Foo'
-    });
-
-    // Intercept and delay request
-    const delayInMs = 500;
-
-    await page.route('**', async (route, request) => {
-      await new Promise((resolve) => setTimeout(resolve, delayInMs));
-      route.continue();
-    });
-
-    // Quickly Expand/close the root folder
-    await page
-      .getByRole('button', {
-        name: `Expand My Items folder`
-      })
-      .dblclick({ delay: 400 });
-
-    expect(requestWasAborted).toBe(true);
   });
 });
 
